@@ -12,11 +12,20 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "configuration": {
+      "properties": {
+        "myExtension.relativeLineNumbers": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable relative line numbers."
+        }
+      }
+    },
     "commands": [
       {
-        "command": "clox.helloWorld",
-        "title": "Hello World"
-      }
+      "command": "clox.toggleRelativeLineNumbers",
+      "title": "Toggle Relative Line Numbers CLOX"
+    }
     ]
   },
   "scripts": {

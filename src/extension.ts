@@ -1,26 +1,29 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from 'vscode'; // Import the VSCode API module to interact with the editor
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+// This function is called when the extension is activated
 export function activate(context: vscode.ExtensionContext) {
+  // Retrieve the current configuration settings
+  const config = vscode.workspace.getConfiguration();
+  // Get the value of the 'clox.relativeLineNumbers' setting
+  const isEnabled = config.get<boolean>('clox.relativeLineNumbers');
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "clox" is now active!');
+  // If the setting is enabled, set the editor's line numbers to 'relative'
+  if (isEnabled) {
+    vscode.workspace.getConfiguration('editor').update('lineNumbers', 'relative', true);
+  }
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('clox.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from CLOX!');
-	});
-
-	context.subscriptions.push(disposable);
+  // Register a command to toggle relative line numbers
+  context.subscriptions.push(
+    vscode.commands.registerCommand('clox.toggleRelativeLineNumbers', () => {
+      // Get the current state of the setting
+      const current = config.get<boolean>('clox.relativeLineNumbers');
+      // Toggle the setting value
+      config.update('clox.relativeLineNumbers', !current, vscode.ConfigurationTarget.Global);
+      // Update the editor's line number mode based on the new setting
+      vscode.workspace.getConfiguration('editor').update('lineNumbers', !current ? 'relative' : 'on', true);
+    })
+  );
 }
 
-// This method is called when your extension is deactivated
+// This function is called when the extension is deactivated
 export function deactivate() {}
